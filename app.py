@@ -6,6 +6,11 @@ from flask_migrate import Migrate
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite3'
+app.config['SQLALCHEMY_BINDS'] = {
+    'db2': 'sqlite:///db2.sqlite3',  # db2 is for employees and db3 for employers
+    'db3': 'sqlite:///db3.sqlite3'
+}
+
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
@@ -13,21 +18,41 @@ login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 
 
-# User Model
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(150), unique=True, nullable=False)
-    password = db.Column(db.String(150), nullable=False)  # Plain text password storage
+    password = db.Column(db.String(150), nullable=False)
     status = db.Column(db.Boolean, nullable=False)  # 1 for employee, 0 for employer
     summary = db.Column(db.String(100), default='')
     description = db.Column(db.String(500), default='')
 
 
-# Initialize the database with tables
+class Model2(db.Model):
+    __bind_key__ = 'db2'
+    __tablename__ = '2Model'
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(150), unique=True, nullable=False)
+    password = db.Column(db.String(150), nullable=False)
+    status = db.Column(db.Boolean, nullable=False)  # 1 for employee, 0 for employer
+    summary = db.Column(db.String(100), default='')
+    description = db.Column(db.String(500), default='')
+
+
+class Model3(db.Model):
+    __bind_key__ = 'db3'
+    __tablename__ = '3Model'
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(150), unique=True, nullable=False)
+    password = db.Column(db.String(150), nullable=False)
+    status = db.Column(db.Boolean, nullable=False)  # 1 for employee, 0 for employer
+    summary = db.Column(db.String(100), default='')
+    description = db.Column(db.String(500), default='')
+
+
 with app.app_context():
     db.create_all()
 
-# Load user function for Flask-Login
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -47,7 +72,7 @@ def login():
         password = request.form['password']
         user = User.query.filter_by(username=username).first()
 
-        if user and user.password == password:  # Check plain text password
+        if user and user.password == password:
             login_user(user)
             return redirect(url_for('home'))
         else:
@@ -67,9 +92,20 @@ def signup():
         try:
             db.session.add(new_user)
             db.session.commit()
+
+            if status == 1:
+                employee_entry = Model2(username=username, password=password, status=status, summary='', description='')
+                db.session.add(employee_entry)
+                db.session.commit()
+            else:
+                employer_entry = Model3(username=username, password=password, status=status, summary='', description='')
+                db.session.add(employer_entry)
+                db.session.commit()
+
             flash('User created successfully')
             return redirect(url_for('login'))
         except:
+            db.session.rollback()
             flash('Username already exists')
     return render_template('signup.html')
 
@@ -78,33 +114,37 @@ def signup():
 @login_required
 def update_profile():
     if request.method == 'POST':
-        # Update the current user's profile fields
         current_user.summary = request.form.get('summary')
         current_user.description = request.form.get('description')
         db.session.commit()
         flash('Profile updated successfully!')
         return redirect(url_for('update_profile'))
 
-    # Pass the current user's data to the template
     return render_template(
         'update_profile.html',
         username=current_user.username,
         summary=current_user.summary,
         description=current_user.description
     )
+
+
 @app.route('/settings')
 @login_required
 def settings():
-    # Render a settings page or perform settings-related actions
     return render_template('settings.html')
+
+
 @app.route('/chats')
 @login_required
 def chats():
     return render_template('chats.html')
+
+
 @app.route('/notifications')
 @login_required
 def notifications():
     return render_template('notifications.html')
+
 
 @app.route('/logout')
 @login_required
