@@ -2,12 +2,46 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Conversations</title>
+    <style>
+        .nav-bar {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-around;
+            border-top: 1px solid #eee;
+        }
+
+        .nav-item {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #f8f9fa;
+            cursor: pointer;
+        }
+
+        .nav-item:hover {
+            background: #e9ecef;
+        }
+    </style>
     <h1>Georgiana_fr spune: belesti pula</h1>
     <h2>Ianis daca talent ne-a demonstrat tuturor</h2>
     <h3>A fost un meci frumos dar din ce am vazut n-a prea fost</h3>
 </head>
 <body>
-
+    <div class="nav-bar">
+        <a class="nav-item" href="{{ url_for('chats') }}">💬</a>
+        <a class="nav-item" href="{{ url_for('notifications') }}">🔔</a>
+        <a class="nav-item" href="{{ url_for('search') }}">🔍</a>
+        <a class="nav-item" href="{{ url_for('settings') }}">⚙️</a>
+        <a class="nav-item" href="{{ url_for('update_profile') }}">👤</a>
+    </div>
 </body>
 </html>

@@ -2,7 +2,35 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Notifications</title>
+    <style>
+        .nav-bar {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-around;
+            border-top: 1px solid #eee;
+        }
+
+        .nav-item {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #f8f9fa;
+            cursor: pointer;
+        }
+
+        .nav-item:hover {
+            background: #e9ecef;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -14,5 +42,13 @@
         </ul>
         <a href="{{ url_for('home') }}">Home</a>
     </div>
+    <div class="nav-bar">
+        <a class="nav-item" href="{{ url_for('chats') }}">💬</a>
+        <a class="nav-item" href="{{ url_for('notifications') }}">🔔</a>
+        <a class="nav-item" href="{{ url_for('search') }}">🔍</a>
+        <a class="nav-item" href="{{ url_for('settings') }}">⚙️</a>
+        <a class="nav-item" href="{{ url_for('update_profile') }}">👤</a>
+    </div>
+    
 </body>
 </html>

@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
     <style>
         .modal {
@@ -26,6 +27,29 @@
             float: right;
             font-size: 24px;
             cursor: pointer;
+        }
+        .nav-bar {
+            padding: 15px;
+            display: flex;
+            justify-content: space-around;
+            border-top: 1px solid #eee;
+            margin-top: auto;
+            flex-shrink: 0;
+        }
+
+        .nav-item {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #f8f9fa;
+            cursor: pointer;
+        }
+
+        .nav-item:hover {
+            background: #e9ecef;
         }
     </style>
 </head>
@@ -90,5 +114,12 @@
     </div>
 
     <script src="{{ url_for('static', filename='modal.js') }}"></script>
+    <div class="nav-bar">
+        <a class="nav-item" href="{{ url_for('chats') }}" >👥</a>
+        <a class="nav-item" href="{{ url_for('notifications') }}">📊</a>
+        <a class="nav-item" href="{{ url_for('employerPage') }}">💼</a>
+        <a class="nav-item" href="{{ url_for('settings') }}">⚙️</a>
+        <a class="nav-item" href="{{ url_for('update_profile') }}">👤</a>
+    </div>
 </body>
 </html>
