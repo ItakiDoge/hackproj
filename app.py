@@ -82,7 +82,7 @@ def home():
 def job():
     if request.method == 'POST':
         job_title = request.form['jobname']
-        user_id = request.form['user_id']
+        user_id = current_user.id
 
         # Find or create the job
         job = Job.query.filter_by(title=job_title).first()
