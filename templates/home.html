@@ -59,6 +59,16 @@
                                 <button onclick="showEmployeeDetails('{{ applicant.username }}', '{{ applicant.summary }}', '{{ applicant.description }}')">
                                     See Employee Details
                                 </button>
+                                <form action="{{ url_for('notify', job_id=job.id, user_id=applicant.id) }}" method="post" style="display:inline;">
+                                    <input type="hidden" name="decision" value="accepted">
+                                    <textarea name="explanation" placeholder="Explanation"></textarea>
+                                    <button type="submit">Accept</button>
+                                </form>
+                                <form action="{{ url_for('notify', job_id=job.id, user_id=applicant.id) }}" method="post" style="display:inline;">
+                                    <input type="hidden" name="decision" value="rejected">
+                                    <textarea name="explanation" placeholder="Explanation"></textarea>
+                                    <button type="submit">Reject</button>
+                                </form>
                             </li>
                         {% endfor %}
                     </ul>
