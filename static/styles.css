@@ -1,0 +1,90 @@
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* iPhone Frame */
+.iphone-frame {
+    position: relative;
+    width: 390px;
+    height: 844px;
+    margin: 50px auto;
+    background: #FFFFFF;
+    border-radius: 40px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 40px;
+}
+
+/* Profile Card */
+.profile-card {
+    width: 323px;
+    padding: 20px;
+    text-align: center;
+    background: #FFFFFF;
+    border-radius: 42px;
+    box-shadow: -6px 4px 13px 1px rgba(0, 0, 0, 0.25);
+}
+
+.profile-picture {
+    width: 255px;
+    height: 255px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 15px;
+}
+
+.profile-card h2 {
+    font-size: 18px;
+    font-weight: 400;
+    font-family: 'Khmer', sans-serif;
+    color: #000000;
+}
+
+.profile-card p {
+    font-size: 15px;
+    color: #7B7676;
+    font-family: 'Khmer', sans-serif;
+}
+
+.location-icon {
+    width: 20px;
+    vertical-align: middle;
+    margin-right: 5px;
+}
+
+.employee-range {
+    margin-top: 5px;
+    font-size: 11px;
+}
+
+/* Like/Dislike Buttons */
+.actions {
+    display: flex;
+    justify-content: space-around;
+    width: 90%;
+    margin-bottom: 40px;
+}
+
+button {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    border: none;
+    font-size: 24px;
+    color: #fff;
+    cursor: pointer;
+}
+
+.like {
+    background-color: #89E73D;
+}
+
+.dislike {
+    background-color: #FA4747;
+}
