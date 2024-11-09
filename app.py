@@ -1,7 +1,8 @@
-from flask import Flask, render_template, redirect, url_for, request, flash
+from flask import Flask, jsonify, render_template, redirect, url_for, request, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_migrate import Migrate
+import base64
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
@@ -33,6 +34,8 @@ class Job(db.Model):
     __tablename__ = "jobs"
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(150), unique=True, nullable=False)
+    photo = db.Column(db.LargeBinary)  # Store the photo as binary data
+    location = db.Column(db.String(150))  # Add the location field
 
     users = db.relationship('User', secondary=user_jobs, back_populates="jobs")
 
@@ -60,6 +63,48 @@ def home():
         jobs = Job.query.filter(Job.users.any()).all()
         return render_template('home.html', name=current_user.username, role=role, jobs=jobs)
 
+
+@app.route('/search')
+@login_required
+def search():
+    return render_template('index.html')
+
+
+
+@app.route('/job', methods=['GET', 'POST'])
+def job():
+    if request.method == 'POST':
+        job_title = request.form['jobname']
+        location = request.form['location']  # Get the location from the form
+        user_id = current_user.id
+        photo = request.files.get('photo')  # Handle job photo
+
+        # Find or create the job
+        job = Job.query.filter_by(title=job_title).first()
+        if not job:
+            job = Job(title=job_title, location=location)  # Add location to the job
+
+        if photo:
+            job.photo = photo.read()  # Save photo as binary data
+        else:
+            job.photo = None  # If no photo is uploaded, set it to None
+
+        db.session.add(job)
+        user = User.query.get(user_id)
+        if user and user not in job.users:
+            job.users.append(user)
+
+        try:
+            db.session.commit()
+            flash('Job and user association created successfully')
+            return redirect(url_for('job'))
+        except:
+            db.session.rollback()
+            flash('Job already exists or association failed')
+
+    jobs = Job.query.all()  # Fetch all jobs with associated users
+    users = User.query.all()  # For populating the dropdown
+    return render_template('job.html', jobs=jobs, users=users)
 @app.route('/notify/<int:job_id>/<int:user_id>', methods=['POST'])
 @login_required
 def notify(job_id, user_id):
@@ -101,6 +146,30 @@ def select_job(job_id):
     else:
         flash('You have already applied for this job or it does not exist')
     return redirect(url_for('home'))
+
+# API route to create a match
+@app.route('/api/match', methods=['POST'])
+def create_match():
+    pass # Replace with code to match the employee here
+
+@app.route('/api/jobs', methods=['GET'])
+def get_jobs():
+    try:
+        jobs = []
+        for job in Job.query.all():
+            job_data = {
+                'id': job.id,
+                'title': job.title,
+                'location': job.location,  # Add location to job data
+                'photo': None  # Adjust if you add photo support later
+            }
+            if job.photo:
+                job_data['photo'] = base64.b64encode(job.photo).decode('utf-8')  # Encode photo to base64 for frontend
+            jobs.append(job_data)
+
+        return jsonify({'status': 'success', 'data': jobs})
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

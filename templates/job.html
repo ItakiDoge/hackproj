@@ -6,12 +6,18 @@
 </head>
 <body>
     <h2>Make a job</h2>
-    <form method="POST">
-      <label for="jobname">Job Name:</label>
-      <input type="text" id="jobname" name="jobname" required>
-  
-      <button type="submit">Create Job</button>
-  </form>
+    <form method="POST" enctype="multipart/form-data">
+    <label for="jobname">Job Title:</label>
+    <input type="text" id="jobname" name="jobname" required><br>
+
+    <label for="location">Location:</label>
+    <input type="text" id="location" name="location" required><br>
+
+    <label for="photo">Job Photo:</label>
+    <input type="file" id="photo" name="photo"><br>
+
+    <button type="submit">Save Job</button>
+</form>
   
   <h2>Jobs and Associated Users</h2>
   <ul>
