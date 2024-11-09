@@ -69,9 +69,12 @@ def create_job():
     if current_user.status == 0: 
         if request.method == 'POST':
             jobname = request.form.get('jobname')
+            location = request.form['location']  # Get the location from the form
+            photo = request.files.get('photo')  # Handle job photo
             if jobname:
-                new_job = Job(title=jobname)
+                new_job = Job(title=jobname, location=location, photo=photo.read())
                 db.session.add(new_job)
+                
                 db.session.commit()
                 flash(f'Job "{jobname}" created successfully!')
             else:
