@@ -2,93 +2,251 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Home</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Network</title>
     <style>
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
             justify-content: center;
             align-items: center;
+            min-height: 100vh;
         }
-        .modal-content {
-            background-color: #fff;
+
+        .app-container {
+            width: 375px;
+            height: 700px;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .card {
+            height:450px;
+            background: white;
+            border-radius: 15px;
             padding: 20px;
-            width: 400px;
-            border-radius: 8px;
-            text-align: left;
+            margin: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            position: relative;
+            transition: transform 0.3s, opacity 0.3s;
         }
-        .close {
+
+        .company-logo {
+            width: 100%;
+            height: 200px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .job-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .location {
+            color: #666;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .company-size {
             float: right;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .button {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 24px;
             cursor: pointer;
+            transition: transform 0.2s;
         }
+
+        .button:hover {
+            transform: scale(1.1);
+        }
+
+        .reject {
+            background: #ff4f4f;
+            color: white;
+        }
+
+        .accept {
+            background: #4caf50;
+            color: white;
+        }
+
+        .nav-bar {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-around;
+            border-top: 1px solid #eee;
+        }
+
+        .nav-item {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #f8f9fa;
+            cursor: pointer;
+        }
+
+        .nav-item:hover {
+            background: #e9ecef;
+        }
+    </style>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Network</title>
+    <style>
+        /* Your existing styles here */
     </style>
 </head>
 <body>
-    <h1>Welcome, {{ name }}!</h1>
-    <p>You are logged in as an {{ role }}.</p>
+    <div class="app-container">
+        <div id="job-cards"></div>
 
-    {% if role == "Employee" %}
-        <h2>Available Jobs</h2>
-        <ul>
-            {% for job in jobs %}
-                <li>
-                    {{ job.title }}
-                    <form action="{{ url_for('select_job', job_id=job.id) }}" method="post">
-                        <button type="submit">Apply</button>
-                    </form>
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <h2>Your Jobs</h2>
-        <ul>
-            {% for job in jobs %}
-                <li>
-                    <strong>{{ job.title }}</strong>
-                    <p>Applicants:</p>
-                    <ul>
-                        {% for applicant in job.users %}
-                            <li>
-                                {{ applicant.username }}
-                                <button onclick="showEmployeeDetails('{{ applicant.username }}', '{{ applicant.summary }}', '{{ applicant.description }}')">
-                                    See Employee Details
-                                </button>
-                                <form action="{{ url_for('notify', job_id=job.id, user_id=applicant.id) }}" method="post" style="display:inline;">
-                                    <input type="hidden" name="decision" value="accepted">
-                                    <textarea name="explanation" placeholder="Explanation"></textarea>
-                                    <button type="submit">Accept</button>
-                                </form>
-                                <form action="{{ url_for('notify', job_id=job.id, user_id=applicant.id) }}" method="post" style="display:inline;">
-                                    <input type="hidden" name="decision" value="rejected">
-                                    <textarea name="explanation" placeholder="Explanation"></textarea>
-                                    <button type="submit">Reject</button>
-                                </form>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                </li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-
-    <a href="{{ url_for('logout') }}">Logout</a>
-    <a href="{{ url_for('create_job') }}">Add Job</a>
-    <div id="employeeModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <h2>Employee Details</h2>
-            <p><strong>Username:</strong> <span id="modalUsername"></span></p>
-            <p><strong>Summary:</strong> <span id="modalSummary"></span></p>
-            <p><strong>Description:</strong> <span id="modalDescription"></span></p>
+        <div class="action-buttons">
+            <button class="button reject" onclick="handleSwipe('reject')">✕</button>
+            <button class="button accept" onclick="handleSwipe('accept')">✓</button>
+        </div>
+     <div class="nav-bar">
+            <a style="text-decoration:none"  href="chats" class="nav-item">💬</a>
+            <a style="text-decoration:none"  href="notifications" class="nav-item">🔔</a>
+            <a style="text-decoration:none"  href="#" class="nav-item">🔍</a>
+            <a style="text-decoration:none"  href="settings" class="nav-item">⚙️</a>
+            <a style="text-decoration:none"  href="update_profile" class="nav-item">👤</a>
         </div>
     </div>
 
-    <script src="{{ url_for('static', filename='modal.js') }}"></script>
+    <script>
+        let currentJobs = [];
+        let currentIndex = 0;
+
+        // Fetch jobs from the API
+        async function fetchJobs() {
+            try {
+                const response = await fetch('/api/jobs');
+                const data = await response.json();
+                if (data.status === 'success') {
+                    currentJobs = data.data;
+                    displayCurrentJob();
+                }
+            } catch (error) {
+                console.error('Error fetching jobs:', error);
+            }
+        }
+
+        // Display the current job
+        function displayCurrentJob() {
+            if (currentIndex >= currentJobs.length) {
+                currentIndex = 0;
+                fetchJobs();
+                return;
+            }
+
+            const job = currentJobs[currentIndex];
+            const jobCardsDiv = document.getElementById('job-cards');
+
+            // Set a placeholder or default image if there's no photo
+            const jobPhoto = job.photo ? `data:image/png;base64,${job.photo}` : null;
+
+            jobCardsDiv.innerHTML = `
+                <div class="card" id="job-${job.id}">
+                    <div class="company-logo">
+                        ${jobPhoto ? `<img src="${jobPhoto}" alt="Company Logo" style="width: 100%; height: 200px; object-fit: cover;">`
+                                   : `<span style="font-size: 40px;">🏢</span>`}
+                    </div>
+                    <div class="job-title">${job.title}</div>
+                    <div class="location">
+                        <span>📍</span>
+                        ${job.location || 'Location not specified'}
+                        <span class="company-size">${job.company_size || ''}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Handle swipe action (accept/reject)
+        async function handleSwipe(action) {
+            if (currentJobs.length === 0) {
+                console.log('No jobs available');
+                return;
+            }
+
+            const job = currentJobs[currentIndex];
+            const card = document.querySelector('.card');
+            const direction = action === 'accept' ? 1 : -1;
+
+            // Animate the card
+            card.style.transform = `translateX(${direction * 200}px) rotate(${direction * 20}deg)`;
+            card.style.opacity = '0';
+
+            // Send match data to the server
+            try {
+                await fetch('/api/match', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        user_id: 1, // Hardcoded for demo
+                        job_id: job.id,
+                        status: action === 'accept' ? 'liked' : 'rejected'
+                    })
+                });
+            } catch (error) {
+                console.error('Error creating match:', error);
+            }
+
+            // Move to next job
+            setTimeout(() => {
+                currentIndex++;
+                displayCurrentJob();
+            }, 300);
+        }
+
+        // Initialize
+        fetchJobs();
+    </script>
 </body>
 </html>
+

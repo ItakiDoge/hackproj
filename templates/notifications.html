@@ -2,17 +2,130 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Notifications</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            width: 375px;
+            height: 700px;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header {
+            width: 100%;
+            height: 60px;
+            background-color: #4caf50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .notifications-content {
+            width: 100%;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            overflow-y: auto;
+        }
+
+        .notification-item {
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            font-size: 14px;
+            color: #333;
+        }
+
+        .notification-time {
+            font-size: 12px;
+            color: #888;
+            margin-top: 5px;
+        }
+
+        .nav-bar {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-around;
+            border-top: 1px solid #eee;
+        }
+
+        .nav-item {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #f8f9fa;
+            cursor: pointer;
+        }
+
+        .nav-item:hover {
+            background: #e9ecef;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Notifications</h2>
-        <ul>
-            {% for message in messages %}
-                <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
-        <a href="{{ url_for('home') }}">Home</a>
+    <div class="app-container">
+        <!-- Header -->
+        <div class="header">Notifications</div>
+
+        <!-- Notifications Content -->
+        <div class="notifications-content">
+            <div class="notification-item">
+                New job recommendation available for your profile!
+                <div class="notification-time">2 hours ago</div>
+            </div>
+            <div class="notification-item">
+                Your application for "Software Engineer" has been viewed.
+                <div class="notification-time">Yesterday</div>
+            </div>
+            <div class="notification-item">
+                You have a new message from Recruiter John Doe.
+                <div class="notification-time">3 days ago</div>
+            </div>
+            <!-- Add more notifications as needed -->
+        </div>
+
+        <!-- Navigation Bar -->
+        <div class="nav-bar">
+            <a href="chats.html" class="nav-item">💬</a>
+            <a href="notifications.html" class="nav-item">🔔</a>
+            <a href="search.html" class="nav-item">🔍</a>
+            <a href="settings.html" class="nav-item">⚙️</a>
+            <a href="profile.html" class="nav-item">👤</a>
+        </div>
     </div>
 </body>
 </html>

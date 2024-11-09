@@ -2,35 +2,154 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Update Profile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            width: 375px;
+            height: 700px;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .profile-header {
+            width: 100%;
+            height: 200px;
+            background-color: #4caf50;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .profile-photo {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: #4caf50;
+            margin-bottom: 10px;
+        }
+
+        .username {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .profile-content {
+            width: 100%;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            overflow-y: auto;
+            text-align: left;
+        }
+
+        .profile-section {
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .section-content {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .nav-bar {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-around;
+            border-top: 1px solid #eee;
+        }
+
+        .nav-item {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #f8f9fa;
+            cursor: pointer;
+        }
+
+        .nav-item:hover {
+            background: #e9ecef;
+        }
+    </style>
 </head>
 <body>
-    <h2>Update Profile</h2>
-    <form method="POST">
-        <label>Summary:</label>
-        <input type="text" name="summary" value="{{ summary }}">
-        <br>
-        <label>Description:</label>
-        <input type="text" name="description" value="{{ description }}">
-        <br>
-        <button type="submit">Update Profile</button>
-    </form>
-    <a href="{{ url_for('home') }}">Home</a>
+    <div class="app-container">
+        <!-- Profile Header -->
+        <div class="profile-header">
+            <div class="profile-photo">👤</div>
+            <div class="username">John Doe</div>
+        </div>
 
-    <h3>Current Profile</h3>
-    <p>Username: {{ username }}</p>
-    <p>Summary: {{ summary }}</p>
-    <p>Description: {{ description }}</p>
+        <!-- Profile Content -->
+        <div class="profile-content">
+            <div class="profile-section">
+                <div class="section-title">About</div>
+                <div class="section-content">Enthusiastic professional with 5 years of experience in the tech industry. Passionate about creating impactful solutions.</div>
+            </div>
+            <div class="profile-section">
+                <div class="section-title">Skills</div>
+                <div class="section-content">JavaScript, React, Node.js, Python, UI/UX Design</div>
+            </div>
+            <div class="profile-section">
+                <div class="section-title">Contact</div>
+                <div class="section-content">Email: john.doe@example.com<br>Phone: (123) 456-7890</div>
+            </div>
+        </div>
 
-    <h3>Associated Jobs</h3>
-    {% if jobs %}
-        <ul>
-        {% for job in jobs %}
-            <li>{{ job.title }}</li>
-        {% endfor %}
-        </ul>
-    {% else %}
-        <p>No jobs associated.</p>
-    {% endif %}
+        <!-- Navigation Bar -->
+        <div class="nav-bar">
+            <a href="chats" class="nav-item">💬</a>
+            <a href="notifications" class="nav-item">🔔</a>
+            <a href="index" class="nav-item">🔍</a>
+            <a href="settings" class="nav-item">⚙️</a>
+            <a href="profile" class="nav-item">👤</a>
+        </div>
+    </div>
 </body>
 </html>

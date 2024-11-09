@@ -82,7 +82,7 @@ def create_job():
         return redirect(url_for('home'))
 
 
-@app.route('/search')
+
 @login_required
 def search():
     return render_template('index.html')
