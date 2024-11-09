@@ -5,29 +5,112 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
     <style>
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
             justify-content: center;
             align-items: center;
+            min-height: 100vh;
+            flex-direction: column;
         }
-        .modal-content {
-            background-color: #fff;
+
+        .app-container {
+            width: 375px;
+            height: 700px;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .main-content {
             padding: 20px;
-            width: 400px;
-            border-radius: 8px;
-            text-align: left;
+            width: 100%;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            text-align: center;
         }
-        .close {
-            float: right;
-            font-size: 24px;
+
+        .main-content h1 {
+            margin-bottom: 10px;
+        }
+
+        .main-content p {
+            margin-bottom: 20px;
+            font-size: 16px;
+            color: #666;
+        }
+
+        .job-list-container,
+        .employee-list-container {
+            width: 100%;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .job-list-container ul,
+        .employee-list-container ul {
+            list-style-type: none;
+        }
+
+        .job-list-container ul li,
+        .employee-list-container ul li {
+            padding: 10px;
+            background-color: #f8f9fa;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+
+        .job-list-container button,
+        .employee-list-container button {
+            padding: 8px 15px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 5px;
             cursor: pointer;
+            margin-top: 5px;
         }
+
+        .job-list-container button:hover,
+        .employee-list-container button:hover {
+            background-color: #45a049;
+        }
+
+        .log-out-button {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            padding: 8px;
+            font-size: 14px;
+            background: #ff4f4f;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .log-out-button:hover {
+            background: #d94343;
+        }
+
         .nav-bar {
             padding: 15px;
             display: flex;
@@ -35,6 +118,7 @@
             border-top: 1px solid #eee;
             margin-top: auto;
             flex-shrink: 0;
+            width: 100%;
         }
 
         .nav-item {
@@ -51,75 +135,134 @@
         .nav-item:hover {
             background: #e9ecef;
         }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            width: 400px;
+            border-radius: 8px;
+            text-align: left;
+        }
+
+        .close {
+            float: right;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
     </style>
 </head>
 <body>
-    <h1>Welcome, {{ name }}!</h1>
-    <p>You are logged in as an {{ role }}.</p>
-
-    {% if role == "Employee" %}
-        <h2>Available Jobs</h2>
-        <ul>
-            {% for job in jobs %}
-                <li>
-                    {{ job.title }}
-                    <form action="{{ url_for('select_job', job_id=job.id) }}" method="post">
-                        <button type="submit">Apply</button>
-                    </form>
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <h2>Your Jobs</h2>
-        <ul>
-            {% for job in jobs %}
-                <li>
-                    <strong>{{ job.title }}</strong>
-                    <p>Applicants:</p>
-                    <ul>
-                        {% for applicant in job.users %}
-                            <li>
-                                {{ applicant.username }}
-                                <button onclick="showEmployeeDetails('{{ applicant.username }}', '{{ applicant.summary }}', '{{ applicant.description }}')">
-                                    See Employee Details
-                                </button>
-                                <form action="{{ url_for('notify', job_id=job.id, user_id=applicant.id) }}" method="post" style="display:inline;">
-                                    <input type="hidden" name="decision" value="accepted">
-                                    <textarea name="explanation" placeholder="Explanation"></textarea>
-                                    <button type="submit">Accept</button>
-                                </form>
-                                <form action="{{ url_for('notify', job_id=job.id, user_id=applicant.id) }}" method="post" style="display:inline;">
-                                    <input type="hidden" name="decision" value="rejected">
-                                    <textarea name="explanation" placeholder="Explanation"></textarea>
-                                    <button type="submit">Reject</button>
-                                </form>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                </li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-
-    <a href="{{ url_for('logout') }}">Logout</a>
-    <a href="{{ url_for('create_job') }}">Add Job</a>
-    <div id="employeeModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <h2>Employee Details</h2>
-            <p><strong>Username:</strong> <span id="modalUsername"></span></p>
-            <p><strong>Summary:</strong> <span id="modalSummary"></span></p>
-            <p><strong>Description:</strong> <span id="modalDescription"></span></p>
+    <div class="app-container">
+        <!-- Main Content -->
+        <div class="main-content">
+            <h1>Welcome, {{ name }}!</h1>
+            <p>You are logged in as a(n) {{ role }}.</p>
         </div>
+
+        <!-- Job List Section for Employee -->
+        {% if role == "Employee" %}
+            <div class="job-list-container">
+                <h2>Available Jobs</h2>
+                <ul>
+                    {% for job in jobs %}
+                        <li>
+                            {{ job.title }}
+                            <form action="{{ url_for('select_job', job_id=job.id) }}" method="post">
+                                <button type="submit">Apply</button>
+                            </form>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% else %}
+            <!-- Job List and Applicants for Employer -->
+            <div class="employee-list-container">
+                <h2>Your Jobs</h2>
+                <ul>
+                    {% for job in jobs %}
+                        <li>
+                            <strong>{{ job.title }}</strong>
+                            <p>Applicants:</p>
+                            <ul>
+                                {% for applicant in job.users %}
+                                    <li>
+                                        {{ applicant.username }}
+                                        <button onclick="showEmployeeDetails('{{ applicant.username }}', '{{ applicant.summary }}', '{{ applicant.description }}')">
+                                            See Employee Details
+                                        </button>
+                                        <form action="{{ url_for('notify', job_id=job.id, user_id=applicant.id) }}" method="post" style="display:inline;">
+                                            <input type="hidden" name="decision" value="accepted">
+                                            <textarea name="explanation" placeholder="Explanation"></textarea>
+                                            <button type="submit">Accept</button>
+                                        </form>
+                                        <form action="{{ url_for('notify', job_id=job.id, user_id=applicant.id) }}" method="post" style="display:inline;">
+                                            <input type="hidden" name="decision" value="rejected">
+                                            <textarea name="explanation" placeholder="Explanation"></textarea>
+                                            <button type="submit">Reject</button>
+                                        </form>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
+        <!-- Log Out and Job Creation Links -->
+        
+
+        <!-- Modal for Employee Details -->
+        <div id="employeeModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <h2>Employee Details</h2>
+                <p><strong>Username:</strong> <span id="modalUsername"></span></p>
+                <p><strong>Summary:</strong> <span id="modalSummary"></span></p>
+                <p><strong>Description:</strong> <span id="modalDescription"></span></p>
+            </div>
+        </div>
+
+        <!-- Navigation Bar -->
+        <div class="nav-bar">
+            <a class="nav-item" href="{{ url_for('chats') }}">💬</a>
+            <a class="nav-item" href="{{ url_for('create_job') }}">+</a>
+            <a class="nav-item" href="{{ url_for('employerPage') }}">💼</a>
+            <a class="nav-item" href="{{ url_for('applications') }}">🏠</a>
+            <a class="nav-item" href="{{ url_for('update_profile') }}">👤</a>
+        </div>
+        
     </div>
 
-    <script src="{{ url_for('static', filename='modal.js') }}"></script>
-    <div class="nav-bar">
-        <a class="nav-item" href="{{ url_for('chats') }}" >👥</a>
-        <a class="nav-item" href="{{ url_for('notifications') }}">📊</a>
-        <a class="nav-item" href="{{ url_for('employerPage') }}">💼</a>
-        <a class="nav-item" href="{{ url_for('settings') }}">⚙️</a>
-        <a class="nav-item" href="{{ url_for('update_profile') }}">👤</a>
-    </div>
+    <script>
+        function showEmployeeDetails(username, summary, description) {
+            document.getElementById("modalUsername").textContent = username;
+            document.getElementById("modalSummary").textContent = summary;
+            document.getElementById("modalDescription").textContent = description;
+            document.getElementById("employeeModal").style.display = "flex";
+        }
+
+        function closeModal() {
+            document.getElementById("employeeModal").style.display = "none";
+        }
+
+        function logOut() {
+            window.location.href = "{{ url_for('login') }}";
+        }
+    </script>
 </body>
+<button class="log-out-button" onclick="logOut()">Log Out</button>
 </html>

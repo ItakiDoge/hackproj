@@ -3,8 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Conversations</title>
+    <title>Job Network Chat</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            width: 375px;
+            height: 700px;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+
+        }
+
+        .chat-header {
+            padding: 15px;
+            background: #4caf50;
+            color: white;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .chat-area {
+            flex-grow: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .message {
+            padding: 10px;
+            border-radius: 15px;
+            max-width: 70%;
+        }
+
+        .message.sent {
+            align-self: flex-end;
+            background-color: #4caf50;
+            color: white;
+        }
+
+        .message.received {
+            align-self: flex-start;
+            background-color: #f0f0f0;
+            color: #333;
+        }
+
+        .chat-input-area {
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            border-top: 1px solid #ddd;
+        }
+
+        .chat-input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-right: 10px;
+            outline: none;
+        }
+
+        .send-button {
+            padding: 10px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
         .nav-bar {
             position: absolute;
             bottom: 0;
@@ -30,12 +120,49 @@
         .nav-item:hover {
             background: #e9ecef;
         }
+
+        .log-out-button {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 100px;
+            padding: 8px;
+            font-size: 14px;
+            background: #ff4f4f;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            z-index: 10; /* Ensure the button is on top */
+        }
+
+        .log-out-button:hover {
+            background: #d94343;
+        }
     </style>
-    <h1>Georgiana_fr spune: belesti pula</h1>
-    <h2>Ianis daca talent ne-a demonstrat tuturor</h2>
-    <h3>A fost un meci frumos dar din ce am vazut n-a prea fost</h3>
 </head>
 <body>
+
+<div class="app-container">
+    <!-- Chat Header -->
+    <div class="chat-header">Chat with Sarah</div>
+
+    <!-- Chat Area -->
+    <div class="chat-area">
+        <div class="message received">Hi, are you available to discuss the project?</div>
+        <div class="message sent">Yes, I am available now.</div>
+        <div class="message received">Great! Let’s go over the initial details.</div>
+        <div class="message sent">Sure, I'm ready.</div>
+    </div>
+
+    <!-- Chat Input Area -->
+    <div class="chat-input-area">
+        <input type="text" class="chat-input" placeholder="Type a message...">
+        <button class="send-button">➤</button>
+    </div>
+
+    <!-- Navigation Bar -->
     <div class="nav-bar">
         <a class="nav-item" href="{{ url_for('chats') }}">💬</a>
         <a class="nav-item" href="{{ url_for('notifications') }}">🔔</a>
@@ -43,5 +170,14 @@
         <a class="nav-item" href="{{ url_for('settings') }}">⚙️</a>
         <a class="nav-item" href="{{ url_for('update_profile') }}">👤</a>
     </div>
+</div>
+
 </body>
+<button class="log-out-button" onclick="logOut()">Log Out</button>
+<script>
+
+    function logOut() {
+        window.location.href = "{{ url_for('login') }}";
+    }
+</script>
 </html>

@@ -327,6 +327,26 @@
     color: white;
     box-shadow: 0 2px 8px rgba(244, 67, 54, 0.3);
 }
+
+.log-out-button {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 100px;
+            padding: 8px;
+            font-size: 14px;
+            background: #ff4f4f;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            z-index: 10; /* Ensure the button is on top */
+        }
+
+        .log-out-button:hover {
+            background: #d94343;
+        }
     </style>
 </head>
 <body>
@@ -354,9 +374,9 @@
 
         <div class="nav-bar">
             <a class="nav-item" href="{{ url_for('chats') }}" >👥</a>
-            <a class="nav-item" href="{{ url_for('notifications') }}">📊</a>
+            <a class="nav-item" href="{{ url_for('create_job') }}">+</a>
             <a class="nav-item" href="{{ url_for('employerPage') }}">💼</a>
-            <a class="nav-item" href="{{ url_for('settings') }}">⚙️</a>
+            <a class="nav-item" href="{{ url_for('applications') }}">🏠</a>
             <a class="nav-item" href="{{ url_for('update_profile') }}">👤</a>
         </div>
     </div>
@@ -631,4 +651,11 @@ function handleAction(event, id, action) {
         filterCandidates();
     </script>
 </body>
+<button class="log-out-button" onclick="logOut()">Log Out</button>
+<script>
+
+    function logOut() {
+        window.location.href = "{{ url_for('login') }}";
+    }
+</script>
 </html>

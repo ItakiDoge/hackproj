@@ -2,45 +2,206 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Sign Up</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Job</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            width: 375px;
+            height: 700px;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .form-container {
+            padding: 20px;
+            width: 100%;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .form-container label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .form-container input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .form-container button {
+            padding: 10px 15px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .form-container button:hover {
+            background-color: #45a049;
+        }
+
+        .job-list-container {
+            padding: 20px;
+            width: 100%;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .job-list-container ul {
+            list-style-type: none;
+        }
+
+        .job-list-container ul li {
+            padding: 10px;
+            background-color: #f8f9fa;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+
+        .job-list-container ul li strong {
+            font-size: 16px;
+            color: #333;
+        }
+
+        .nav-bar {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-around;
+            border-top: 1px solid #eee;
+        }
+
+        .nav-item {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #f8f9fa;
+            cursor: pointer;
+        }
+
+        .nav-item:hover {
+            background: #e9ecef;
+        }
+        .log-out-button {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 100px;
+            padding: 8px;
+            font-size: 14px;
+            background: #ff4f4f;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            z-index: 10; /* Ensure the button is on top */
+        }
+
+        .log-out-button:hover {
+            background: #d94343;
+        }
+    </style>
 </head>
 <body>
-    <h2>Make a job</h2>
-    <form method="POST" enctype="multipart/form-data">
-    <label for="jobname">Job Title:</label>
-    <input type="text" id="jobname" name="jobname" required><br>
 
-    <label for="location">Location:</label>
-    <input type="text" id="location" name="location" required><br>
+<div class="app-container">
+    <!-- Job Creation Form -->
+    <div class="form-container">
+        <h2>Create a Job</h2>
+        <form method="POST" enctype="multipart/form-data">
+            <label for="jobname">Job Title:</label>
+            <input type="text" id="jobname" name="jobname" required><br>
 
-    <label for="photo">Job Photo:</label>
-    <input type="file" id="photo" name="photo"><br>
+            <label for="location">Location:</label>
+            <input type="text" id="location" name="location" required><br>
 
-    <button type="submit">Save Job</button>
-</form>
-  
-  <h2>Jobs and Associated Users</h2>
-  <ul>
-      {% for job in jobs %}
-          <li>
-              <strong>{{ job.title }}</strong>
-              <ul>
-                  {% for user in job.users %}
-                      <li>{{ user.username }}</li>
-                  {% endfor %}
-              </ul>
-          </li>
-      {% endfor %}
-  </ul>
+            <label for="photo">Job Photo:</label>
+            <input type="file" id="photo" name="photo"><br>
 
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
+            <button type="submit">Save Job</button>
+        </form>
+    </div>
+
+    <!-- Job List and Associated Users -->
+    <div class="job-list-container">
+        <h2>Jobs and Associated Users</h2>
         <ul>
-          {% for message in messages %}
-            <li>{{ message }}</li>
-          {% endfor %}
+            {% for job in jobs %}
+                <li>
+                    <strong>{{ job.title }}</strong>
+                    <ul>
+                        {% for user in job.users %}
+                            <li>{{ user.username }}</li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            {% endfor %}
         </ul>
-      {% endif %}
-    {% endwith %}
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul>
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- Navigation Bar -->
+    <div class="nav-bar">
+      <a class="nav-item" href="{{ url_for('chats') }}" >👥</a>
+      <a class="nav-item" href="{{ url_for('home') }}">+</a>
+      <a class="nav-item" href="{{ url_for('employerPage') }}">💼</a>
+      <a class="nav-item" href="{{ url_for('applications') }}">🏠</a>
+      <a class="nav-item" href="{{ url_for('update_profile') }}">👤</a>
+  </div>
+</div>
+
 </body>
+<button class="log-out-button" onclick="logOut()">Log Out</button>
+<script>
+
+  function logOut() {
+      window.location.href = "{{ url_for('login') }}";
+  }
+</script>
 </html>

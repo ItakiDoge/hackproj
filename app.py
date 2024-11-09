@@ -59,9 +59,14 @@ def home():
     if role == "Employee": 
         return redirect(url_for('search'))
     else: 
-        jobs = Job.query.filter(Job.users.any()).all()
-        return render_template('home.html', name=current_user.username, role=role, jobs=jobs)
+        return render_template("employer_index.html")
     
+@app.route('/home')
+def applications():
+    role = "Employee" if current_user.status == 1 else "Employer"
+    jobs = Job.query.filter(Job.users.any()).all()
+    return render_template('home.html', name=current_user.username, role=role, jobs=jobs)
+
 @app.route('/create_job', methods=['GET', 'POST'])
 @login_required
 def create_job():

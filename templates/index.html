@@ -66,6 +66,14 @@
             gap: 5px;
         }
 
+        .feedback_score {
+            color: #666;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
         .company-size {
             float: right;
             color: #666;
@@ -130,6 +138,25 @@
 
         .nav-item:hover {
             background: #e9ecef;
+        }
+        .log-out-button {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 100px;
+            padding: 8px;
+            font-size: 14px;
+            background: #ff4f4f;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            z-index: 10; /* Ensure the button is on top */
+        }
+
+        .log-out-button:hover {
+            background: #d94343;
         }
     </style>
 <head>
@@ -202,6 +229,10 @@
                         ${job.location || 'Location not specified'}
                         <span class="company-size">${job.company_size || ''}</span>
                     </div>
+
+                    <p>We’re seeking a Front-End Developer to build responsive web interfaces using HTML, CSS, and JavaScript. Experience with frameworks like React, Angular, or Vue.js is a plus. Collaborate with designers and back-end developers to create seamless user experiences.</p>
+
+                    <p class="feedback_score">Feedback score: 95%</p>
                 </div>
             `;
         }
@@ -249,5 +280,12 @@
         fetchJobs();
     </script>
 </body>
+<button class="log-out-button" onclick="logOut()">Log Out</button>
+<script>
+
+    function logOut() {
+        window.location.href = "{{ url_for('login') }}";
+    }
+</script>
 </html>
 </html>

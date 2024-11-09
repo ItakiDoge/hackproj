@@ -9,6 +9,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("dislike-button").addEventListener("click", () => swipe("dislike"));
 });
 
+function logOut() {
+    window.location.href = "{{ url_for('login') }}";
+}
+
 async function fetchJobs() {
     const response = await fetch("/get_jobs");
     jobs = await response.json();
