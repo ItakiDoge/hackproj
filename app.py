@@ -76,36 +76,33 @@ def load_user(user_id):
 @login_required
 def home():
     role = "Employee" if current_user.status == 1 else "Employer"
-    return render_template('home.html', name=current_user.username, role=role)
+    if role == "Employee": 
+        jobs = Job.query.all()
+        return render_template('home.html', name=current_user.username, role=role, jobs=jobs)
+    else: 
+        jobs = Job.query.filter(Job.users.any()).all()
+        return render_template('home.html', name=current_user.username, role=role, jobs=jobs)
+@app.route('/see_employee_details/<int:user_id>', methods=['GET'])
+@login_required
+def see_employee_details(user_id):
+    user = User.query.get(user_id)
+    if user and current_user.status == 0:  
+        return render_template('employee_details.html', user=user)
+    flash("Access denied.")
+    return redirect(url_for('home'))
 
-@app.route('/job', methods=['GET', 'POST'])
-def job():
-    if request.method == 'POST':
-        job_title = request.form['jobname']
-        user_id = current_user.id
+@app.route('/select_job/<int:job_id>', methods=['POST'])
+@login_required
+def select_job(job_id):
+    job = Job.query.get(job_id)
+    if job and current_user not in job.users:
+        job.users.append(current_user)
+        db.session.commit()
+        flash(f'Successfully applied for {job.title}')
+    else:
+        flash('You have already applied for this job or it does not exist')
+    return redirect(url_for('home'))
 
-        # Find or create the job
-        job = Job.query.filter_by(title=job_title).first()
-        if not job:
-            job = Job(title=job_title)
-            db.session.add(job)
-        
-        # Associate the user with the job
-        user = User.query.get(user_id)
-        if user and user not in job.users:
-            job.users.append(user)
-        
-        try:
-            db.session.commit()
-            flash('Job and user association created successfully')
-            return redirect(url_for('job'))
-        except:
-            db.session.rollback()
-            flash('Job already exists or association failed')
-    
-    jobs = Job.query.all()  # Fetch all jobs with associated users
-    users = User.query.all()  # For populating the dropdown
-    return render_template('job.html', jobs=jobs, users=users)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -162,7 +159,6 @@ def update_profile():
         flash('Profile updated successfully!')
         return redirect(url_for('update_profile'))
 
-    # Retrieve the jobs associated with the current user
     user_jobs = current_user.jobs
 
     return render_template(
@@ -170,7 +166,7 @@ def update_profile():
         username=current_user.username,
         summary=current_user.summary,
         description=current_user.description,
-        jobs=user_jobs  # Pass jobs to the template
+        jobs=user_jobs
     )
 
 
