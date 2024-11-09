@@ -17,8 +17,13 @@ migrate = Migrate(app, db)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 
+user_jobs = db.Table('user_jobs',
+    db.Column('user_id', db.Integer, db.ForeignKey('users.id'), primary_key=True),
+    db.Column('job_id', db.Integer, db.ForeignKey('jobs.id'), primary_key=True)
+)
 
 class User(UserMixin, db.Model):
+    __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(150), unique=True, nullable=False)
     password = db.Column(db.String(150), nullable=False)
@@ -26,9 +31,18 @@ class User(UserMixin, db.Model):
     summary = db.Column(db.String(100), default='')
     description = db.Column(db.String(500), default='')
 
+    jobs = db.relationship('Job', secondary=user_jobs, back_populates="users")
+
+
+class Job(db.Model):
+    __tablename__ = "jobs"
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(150), unique=True, nullable=False)
+
+    users = db.relationship('User', secondary=user_jobs, back_populates="jobs")
+    
 
 class Model2(db.Model):
-    __bind_key__ = 'db2'
     __tablename__ = '2Model'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(150), unique=True, nullable=False)
@@ -64,6 +78,34 @@ def home():
     role = "Employee" if current_user.status == 1 else "Employer"
     return render_template('home.html', name=current_user.username, role=role)
 
+@app.route('/job', methods=['GET', 'POST'])
+def job():
+    if request.method == 'POST':
+        job_title = request.form['jobname']
+        user_id = request.form['user_id']
+
+        # Find or create the job
+        job = Job.query.filter_by(title=job_title).first()
+        if not job:
+            job = Job(title=job_title)
+            db.session.add(job)
+        
+        # Associate the user with the job
+        user = User.query.get(user_id)
+        if user and user not in job.users:
+            job.users.append(user)
+        
+        try:
+            db.session.commit()
+            flash('Job and user association created successfully')
+            return redirect(url_for('job'))
+        except:
+            db.session.rollback()
+            flash('Job already exists or association failed')
+    
+    jobs = Job.query.all()  # Fetch all jobs with associated users
+    users = User.query.all()  # For populating the dropdown
+    return render_template('job.html', jobs=jobs, users=users)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -120,11 +162,15 @@ def update_profile():
         flash('Profile updated successfully!')
         return redirect(url_for('update_profile'))
 
+    # Retrieve the jobs associated with the current user
+    user_jobs = current_user.jobs
+
     return render_template(
         'update_profile.html',
         username=current_user.username,
         summary=current_user.summary,
-        description=current_user.description
+        description=current_user.description,
+        jobs=user_jobs  # Pass jobs to the template
     )
 
 
