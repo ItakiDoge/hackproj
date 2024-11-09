@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+</head>
+<body>
+    <h1>Welcome, {{ name }}!</h1>
+    <p>You are logged in as an {{ role }}.</p>
+    <a href="{{ url_for('logout') }}">Logout</a>
+    <a href="{{ url_for('update_profile') }}">Update Profile</a>
+    <a href="{{ url_for('settings') }}">Settings</a>
+    <a href="{{ url_for('notifications') }}">Notifications</a>
+    <a href="{{ url_for('chats') }}">Chats</a>
+</body>
+
+</html>

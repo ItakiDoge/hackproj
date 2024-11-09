@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Update Profile</title>
+</head>
+<body>
+    <h2>Update Profile</h2>
+    <form method="POST">
+        <label>Summary:</label>
+        <input type="text" name="summary" value="{{ summary }}">
+        <br>
+        <label>Description:</label>
+        <input type="text" name="description" value="{{ description }}">
+        <br>
+        <button type="submit">Update Profile</button>
+    </form>
+    <a href="{{ url_for('home') }}">Home</a>
+    <h3>Current Profile</h3>
+    <p>Username: {{ username }}</p>
+    <p>Summary: {{ summary }}</p>
+    <p>Description: {{ description }}</p>
+</body>
+</html>
