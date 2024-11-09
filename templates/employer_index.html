@@ -1,0 +1,634 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employer Network</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+
+        .app-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            padding: 20px;
+            background: #fff;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+
+        .job-selector {
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+            width: 200px;
+        }
+
+        .matches-count {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .card {
+            width: 100%;
+            height: 150px;
+            display: flex;
+            flex-direction: column;
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border: 1px solid #eee;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+        }
+
+   .card.expanded {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%; /* Adjust this to control the width */
+    max-width: 800px; /* Maximum width */
+    max-height: 90vh; /* Maximum height */
+    height: 550px;
+    overflow-y: auto;
+    z-index: 1000;
+    cursor: auto;
+}
+
+
+        .overlay {
+            display: none;
+            position: ;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+<!--            background: rgba(0, 0, 0, 0.5);-->
+            z-index: 999;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        .close-button {
+            display: none;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #f0f0f0;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .card.expanded .close-button {
+            display: block;
+        }
+
+        .profile-photo {
+            width: 60px;
+            height: 60px;
+            border-radius: 30px;
+            background: #f8f9fa;
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .candidate-name {
+            font-size: 16px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 4px;
+        }
+
+        .candidate-title {
+            color: #666;
+            font-size: 13px;
+            text-align: center;
+        }
+
+        .card-details {
+            display: none;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .card.expanded .card-details {
+            display: block;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 12px;
+        }
+
+        .stat-value {
+            font-weight: 600;
+            font-size: 16px;
+            color: #2196f3;
+        }
+
+        .skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 15px;
+        }
+
+        .skill-tag {
+            background: #f0f0f0;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            color: #444;
+        }
+
+        .experience {
+            font-size: 13px;
+        }
+
+        .experience-item {
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .company-name {
+            font-weight: 600;
+        }
+
+        .position-title {
+            color: #444;
+            margin: 2px 0;
+        }
+
+        .date-range {
+            color: #666;
+            font-size: 12px;
+        }
+
+        .description {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        .nav-bar {
+            padding: 15px;
+            display: flex;
+            justify-content: space-around;
+            border-top: 1px solid #eee;
+            margin-top: auto;
+            flex-shrink: 0;
+        }
+
+        .nav-item {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #f8f9fa;
+            cursor: pointer;
+        }
+
+        .nav-item:hover {
+            background: #e9ecef;
+        }
+
+        @media (max-width: 1200px) {
+            .app-container {
+                border-radius: 0;
+            }
+        }
+       .card.expanded {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    max-width: 800px;
+    max-height: 90vh;
+    height: auto;
+    z-index: 1000;
+    cursor: auto;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 80px; /* Make space for the buttons */
+}
+
+.card-details {
+    display: none;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+    overflow-y: auto;
+    max-height: calc(90vh - 250px); /* Adjust to ensure content is scrollable */
+}
+
+.tick-cross-container {
+    display: none;
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    padding: 15px;
+    gap: 30px;
+    width: 100%;
+    justify-content: center;
+    background: white;
+    border-top: 1px solid #eee;
+}
+
+.card.expanded .tick-cross-container {
+    display: flex;
+}
+
+.action-button {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    transition: all 0.2s;
+    z-index: 1001;
+}
+
+.action-button:hover {
+    transform: scale(1.1);
+}
+
+.tick-button {
+    background-color: #4CAF50;
+    color: white;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+}
+
+.cross-button {
+    background-color: #f44336;
+    color: white;
+    box-shadow: 0 2px 8px rgba(244, 67, 54, 0.3);
+}
+    </style>
+</head>
+<body>
+<div class="card" id="candidate-${candidate.id}" onclick="expandCard(event, ${candidate.id})">
+    <button class="close-button" onclick="closeCard(event, ${candidate.id})">✕</button>
+    <div class="tick-cross-container">
+        <button class="action-button tick-button" onclick="handleAction(event, ${candidate.id}, 'approve')">✓</button>
+        <button class="action-button cross-button" onclick="handleAction(event, ${candidate.id}, 'reject')">✗</button>
+    </div>
+    <!-- Rest of the card content remains the same -->
+</div>
+
+    <div class="app-container">
+        <div class="header">
+            <select class="job-selector" onchange="filterCandidates()">
+                <option value="all">All Positions</option>
+                <option value="developer">Senior Developer</option>
+                <option value="designer">UX Designer</option>
+                <option value="manager">Product Manager</option>
+            </select>
+            <div class="matches-count">5 candidates</div>
+        </div>
+
+        <div class="cards-grid" id="candidate-cards"></div>
+
+        <div class="nav-bar">
+            <div class="nav-item">👥</div>
+            <div class="nav-item">📊</div>
+            <div class="nav-item">💼</div>
+            <div class="nav-item">⚙️</div>
+            <div class="nav-item">👤</div>
+        </div>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+<!--    <div class="card" id="candidate-${candidate.id}" onclick="expandCard(event, ${candidate.id})">-->
+<!--        <div class="tick-cross-container">-->
+<!--            <i class="tick">✓</i>-->
+<!--            <i class="cross">✗</i>-->
+<!--        </div>-->
+<!--    </div>-->
+    <script>
+function handleAction(event, id, action) {
+    event.stopPropagation();
+    const actionText = action === 'approve' ? 'approved' : 'rejected';
+
+    // Get candidate details before removal
+    const candidate = candidatesData.find(c => c.id === id);
+
+    // Log the action with candidate details
+    console.log(`Action: ${actionText}`);
+    console.log('Candidate Details:', {
+        id: candidate.id,
+        name: candidate.name,
+        title: candidate.title,
+        action: actionText,
+        timestamp: new Date().toISOString()
+    });
+
+    // Remove from data array
+    const index = candidatesData.findIndex(c => c.id === id);
+    if (index > -1) {
+        candidatesData.splice(index, 1);
+    }
+
+    // Close the expanded card
+    closeCard(event, id);
+
+    // Remove the card with animation
+    const card = document.getElementById(`candidate-${id}`);
+    card.style.transition = 'opacity 0.3s, transform 0.3s';
+    card.style.opacity = '0';
+    card.style.transform = 'scale(0.8)';
+
+    // Update the matches count
+    document.querySelector('.matches-count').textContent = `${candidatesData.length} candidates`;
+
+    // Remove the element after animation
+    setTimeout(() => {
+        card.remove();
+    }, 300);
+}
+        // Candidate data remains the same
+        const candidatesData = [
+            {
+                id: 1,
+                name: "Sarah Johnson",
+                title: "Senior Frontend Developer",
+                role: "developer",
+                experience: 8,
+                projects: 45,
+                rating: 4.9,
+                skills: ["React", "TypeScript", "Node.js", "GraphQL", "AWS", "UI/UX"],
+                experience_history: [
+                    {
+                        company: "Tech Solutions Inc",
+                        position: "Lead Developer",
+                        date_range: "2020 - Present",
+                        description: "Leading frontend development team of 6 developers"
+                    },
+                    {
+                        company: "Digital Innovations",
+                        position: "Senior Developer",
+                        date_range: "2017 - 2020",
+                        description: "Developed enterprise web applications"
+                    }
+                ]
+            },
+            {
+                id: 2,
+                name: "Michael Chen",
+                title: "UX/UI Designer",
+                role: "designer",
+                experience: 6,
+                projects: 38,
+                rating: 4.7,
+                skills: ["Figma", "Adobe XD", "Sketch", "User Research", "Prototyping", "Design Systems"],
+                experience_history: [
+                    {
+                        company: "Design Masters",
+                        position: "Senior Designer",
+                        date_range: "2019 - Present",
+                        description: "Leading design team for major client projects"
+                    },
+                    {
+                        company: "Creative Solutions",
+                        position: "UX Designer",
+                        date_range: "2016 - 2019",
+                        description: "Designed mobile and web applications"
+                    }
+                ]
+            },
+            {
+                id: 3,
+                name: "Emily Rodriguez",
+                title: "Product Manager",
+                role: "manager",
+                experience: 7,
+                projects: 25,
+                rating: 4.8,
+                skills: ["Product Strategy", "Agile", "Data Analysis", "User Stories", "Roadmapping", "Stakeholder Management"],
+                experience_history: [
+                    {
+                        company: "Product Innovators",
+                        position: "Senior Product Manager",
+                        date_range: "2018 - Present",
+                        description: "Managing enterprise SaaS products"
+                    },
+                    {
+                        company: "Tech Startups Inc",
+                        position: "Product Owner",
+                        date_range: "2015 - 2018",
+                        description: "Led product development for mobile apps"
+                    }
+                ]
+            },
+            {
+                id: 4,
+                name: "David Kim",
+                title: "Full Stack Developer",
+                role: "developer",
+                experience: 5,
+                projects: 32,
+                rating: 4.6,
+                skills: ["JavaScript", "Python", "Docker", "MongoDB", "React", "Django"],
+                experience_history: [
+                    {
+                        company: "Web Solutions Co",
+                        position: "Senior Developer",
+                        date_range: "2021 - Present",
+                        description: "Full stack development for enterprise clients"
+                    },
+                    {
+                        company: "StartUp Labs",
+                        position: "Developer",
+                        date_range: "2018 - 2021",
+                        description: "Built scalable web applications"
+                    }
+                ]
+            },
+            {
+                id: 5,
+                name: "Lisa Wang",
+                title: "Product Design Lead",
+                role: "designer",
+                experience: 9,
+                projects: 50,
+                rating: 4.9,
+                skills: ["Design Leadership", "User Research", "Design Systems", "Figma", "Product Strategy", "Team Management"],
+                experience_history: [
+                    {
+                        company: "Design Excellence",
+                        position: "Design Lead",
+                        date_range: "2019 - Present",
+                        description: "Leading design strategy and team of designers"
+                    },
+                    {
+                        company: "Creative Agency",
+                        position: "Senior Designer",
+                        date_range: "2015 - 2019",
+                        description: "Designed digital products for Fortune 500 companies"
+                    }
+                ]
+            }
+        ];
+
+        function filterCandidates() {
+            const selectedRole = document.querySelector('.job-selector').value;
+            let filteredCandidates = selectedRole === 'all'
+                ? candidatesData
+                : candidatesData.filter(candidate => candidate.role === selectedRole);
+
+            document.querySelector('.matches-count').textContent = `${filteredCandidates.length} candidates`;
+            displayCandidates(filteredCandidates);
+        }
+
+        function displayCandidates(candidates) {
+    const candidateCardsDiv = document.getElementById('candidate-cards');
+
+    candidateCardsDiv.innerHTML = candidates.map(candidate => `
+        <div class="card" id="candidate-${candidate.id}" onclick="expandCard(event, ${candidate.id})">
+            <button class="close-button" onclick="closeCard(event, ${candidate.id})">✕</button>
+            <div class="profile-photo">
+                <span style="font-size: 24px;">👤</span>
+            </div>
+            <div class="candidate-name">${candidate.name}</div>
+            <div class="candidate-title">${candidate.title}</div>
+
+            <div class="card-details">
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-value">${candidate.experience}+</div>
+                        Years Exp
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">${candidate.projects}</div>
+                        Projects
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">${candidate.rating}⭐</div>
+                        Rating
+                    </div>
+                </div>
+
+                <div class="skills-container">
+                    ${candidate.skills.map(skill => `
+                        <span class="skill-tag">${skill}</span>
+                    `).join('')}
+                </div>
+
+                <div class="experience">
+                    ${candidate.experience_history.map(exp => `
+                        <div class="experience-item">
+                            <div class="company-name">${exp.company}</div>
+                            <div class="position-title">${exp.position}</div>
+                            <div class="date-range">${exp.date_range}</div>
+                            <div class="description">${exp.description}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+
+            <div class="tick-cross-container">
+                <button class="action-button tick-button" onclick="handleAction(event, ${candidate.id}, 'approve')">✓</button>
+                <button class="action-button cross-button" onclick="handleAction(event, ${candidate.id}, 'reject')">✗</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+        function expandCard(event, id) {
+            const card = document.getElementById(`candidate-${id}`);
+            const overlay = document.getElementById('overlay');
+
+            if (!card.classList.contains('expanded')) {
+                card.classList.add('expanded');
+                overlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeCard(event, id) {
+            event.stopPropagation();
+            const card = document.getElementById(`candidate-${id}`);
+            const overlay = document.getElementById('overlay');
+
+            card.classList.remove('expanded');
+            overlay.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close expanded card when clicking overlay
+        document.getElementById('overlay').addEventListener('click', function() {
+            const expandedCard = document.querySelector('.card.expanded');
+            if (expandedCard) {
+                const id = expandedCard.id.split('-')[1];
+                closeCard(event, id);
+            }
+        });
+
+        // Initialize
+        filterCandidates();
+    </script>
+</body>
+</html>

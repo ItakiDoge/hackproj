@@ -87,7 +87,9 @@ def create_job():
 def search():
     return render_template('index.html')
 
-
+@app.route('/employer')
+def employerPage():
+    return render_template('employer_index.html')
 
 @app.route('/job', methods=['GET', 'POST'])
 def job():
