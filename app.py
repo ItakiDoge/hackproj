@@ -59,6 +59,24 @@ def home():
     else: 
         jobs = Job.query.filter(Job.users.any()).all()
         return render_template('home.html', name=current_user.username, role=role, jobs=jobs)
+@app.route('/create_job', methods=['GET', 'POST'])
+@login_required
+def create_job():
+    if current_user.status == 0: 
+        if request.method == 'POST':
+            jobname = request.form.get('jobname')
+            if jobname:
+                new_job = Job(title=jobname)
+                db.session.add(new_job)
+                db.session.commit()
+                flash(f'Job "{jobname}" created successfully!')
+            else:
+                flash('Job name is required.')
+        jobs = Job.query.all()  
+        return render_template('job.html', jobs=jobs)
+    else:
+        flash("Access denied.")
+        return redirect(url_for('home'))
 
 @app.route('/notify/<int:job_id>/<int:user_id>', methods=['POST'])
 @login_required
