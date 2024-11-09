@@ -150,11 +150,11 @@
         </div>
 
         <div class="nav-bar">
-            <div class="nav-item">💬</div>
-            <div class="nav-item">🔔</div>
-            <div class="nav-item">🔍</div>
-            <div class="nav-item">⚙️</div>
-            <div class="nav-item">👤</div>
+            <a class="nav-item" href="{{ url_for('chats') }}">💬</a>
+            <a class="nav-item" href="{{ url_for('notifications') }}">🔔</a>
+            <a class="nav-item" href="{{ url_for('search') }}">🔍</a>
+            <a class="nav-item" href="{{ url_for('settings') }}">⚙️</a>
+            <a class="nav-item" href="{{ url_for('update_profile') }}">👤</a>
         </div>
     </div>
 

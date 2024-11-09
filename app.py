@@ -62,6 +62,7 @@ def home():
     else: 
         jobs = Job.query.filter(Job.users.any()).all()
         return render_template('home.html', name=current_user.username, role=role, jobs=jobs)
+    
 @app.route('/create_job', methods=['GET', 'POST'])
 @login_required
 def create_job():
@@ -88,10 +89,12 @@ def search():
     return render_template('index.html')
 
 @app.route('/employer')
+@login_required
 def employerPage():
     return render_template('employer_index.html')
 
 @app.route('/job', methods=['GET', 'POST'])
+@login_required
 def job():
     if request.method == 'POST':
         job_title = request.form['jobname']
@@ -169,6 +172,7 @@ def select_job(job_id):
 
 
 @app.route('/api/jobs', methods=['GET'])
+@login_required
 def get_jobs():
     try:
         jobs = []
