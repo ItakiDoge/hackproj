@@ -208,6 +208,11 @@
 
         // Handle swipe action (accept/reject)
         async function handleSwipe(action) {
+            if (currentJobs.length === 0) {
+                console.log('No jobs available');
+                return;
+            }
+
             const job = currentJobs[currentIndex];
             const card = document.querySelector('.card');
             const direction = action === 'accept' ? 1 : -1;
