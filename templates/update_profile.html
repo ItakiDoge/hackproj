@@ -16,9 +16,21 @@
         <button type="submit">Update Profile</button>
     </form>
     <a href="{{ url_for('home') }}">Home</a>
+
     <h3>Current Profile</h3>
     <p>Username: {{ username }}</p>
     <p>Summary: {{ summary }}</p>
     <p>Description: {{ description }}</p>
+
+    <h3>Associated Jobs</h3>
+    {% if jobs %}
+        <ul>
+        {% for job in jobs %}
+            <li>{{ job.title }}</li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No jobs associated.</p>
+    {% endif %}
 </body>
 </html>
