@@ -165,10 +165,6 @@ def select_job(job_id):
         flash('You have already applied for this job or it does not exist')
     return redirect(url_for('home'))
 
-# API route to create a match
-@app.route('/api/match', methods=['POST'])
-def create_match():
-    pass # Replace with code to match the employee here
 
 @app.route('/api/jobs', methods=['GET'])
 def get_jobs():
@@ -202,6 +198,36 @@ def login():
         else:
             flash('Invalid username or password')
     return render_template('login.html')
+@app.route('/api/match', methods=['POST'])
+@login_required
+def create_match():
+    data = request.get_json()
+    user_id = data.get('user_id')
+    job_id = data.get('job_id')
+    status = data.get('status')
+
+    if not job_id or not user_id:
+        return jsonify({'status': 'error', 'message': 'Job ID and User ID are required'}), 400
+
+    # Verify job and user
+    job = Job.query.get(job_id)
+    user = User.query.get(user_id)
+
+    if not job or not user:
+        return jsonify({'status': 'error', 'message': 'Job or User not found'}), 404
+
+    # Handle the swipe result
+    if status == 'liked':
+        if user not in job.users:
+            job.users.append(user)  # Associate the user with the job if liked
+            db.session.commit()
+        return jsonify({'status': 'success', 'message': 'Job liked'})
+
+    elif status == 'rejected':
+        # If rejected, no need to associate; could log it if desired
+        return jsonify({'status': 'success', 'message': 'Job rejected'})
+
+    return jsonify({'status': 'error', 'message': 'Invalid status'}), 400
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
