@@ -57,8 +57,7 @@ def load_user(user_id):
 def home():
     role = "Employee" if current_user.status == 1 else "Employer"
     if role == "Employee": 
-        jobs = Job.query.all()
-        return render_template('home.html', name=current_user.username, role=role, jobs=jobs)
+        return redirect(url_for('search'))
     else: 
         jobs = Job.query.filter(Job.users.any()).all()
         return render_template('home.html', name=current_user.username, role=role, jobs=jobs)
