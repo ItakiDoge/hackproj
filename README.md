@@ -3,6 +3,9 @@
 Team MDROFI's Junction 2024 project. 
 
 Reimagining job hunting in an engaging and productive way!
+## Video Presentation
+
+https://youtu.be/0EDKDWhR2Do
 
 ## Screenshots:
 
